@@ -15,21 +15,38 @@ type RatingItemProps = {
 export default function RatingTable({ rating }: RatingItemProps): JSX.Element {
   console.log({ rating });
   return (
-    <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 650 }} aria-label="simple table">
+    <TableContainer
+      component={Paper}
+      sx={{
+        backgroundColor: '#000080', // Темно-синий фон
+        border: '2px solid #FFD700', // Золотая рамка
+        boxShadow: 3,
+        borderRadius: 0,
+        color: '#FFD700', // Золотой текст
+      }}
+    >
+      <Table sx={{ minWidth: 650 }} aria-label="rating table">
         <TableHead>
           <TableRow>
-            <TableCell>Name</TableCell>
-            <TableCell align="right">Score</TableCell>
+            <TableCell sx={{ color: '#FFD700', fontWeight: 'bold' }}>Имя</TableCell>
+            <TableCell align="right" sx={{ color: '#FFD700', fontWeight: 'bold' }}>
+              Очки
+            </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {rating.map((el) => (
             <TableRow key={el.id}>
-              <TableCell component="th" scope="row">
+              <TableCell
+                component="th"
+                scope="row"
+                sx={{ color: '#FFD700', fontWeight: 'bold', borderBottom: '1px solid #FFD700' }}
+              >
                 {el.name}
               </TableCell>
-              <TableCell align="right">{el.totalScore}</TableCell>
+              <TableCell align="right" sx={{ color: '#FFD700', fontWeight: 'bold', borderBottom: '1px solid #FFD700' }}>
+                {el.totalScore}
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
