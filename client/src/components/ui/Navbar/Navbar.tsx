@@ -12,7 +12,8 @@ export default function Navbar(): JSX.Element {
   const links = [
     ...(user.status === 'logged'
       ? [
-        ]
+        { to: '/', name: 'Main' },
+      ]
       : [
           { to: '/signup', name: 'Sign Up' },
           { to: '/login', name: 'Login' },
@@ -20,7 +21,7 @@ export default function Navbar(): JSX.Element {
   ];
 
   return (
-    <Box sx={{ flexGrow: 1, typography: 'body1', mb:'30px' }}>
+    <Box sx={{ flexGrow: 1, typography: 'body1', mb: '30px' }}>
       <AppBar position="static" sx={{ background: '#000', boxShadow: 'none' }}>
         <Toolbar>
           <Box mr={3}>
@@ -46,3 +47,4 @@ export default function Navbar(): JSX.Element {
     </Box>
   );
 }
+

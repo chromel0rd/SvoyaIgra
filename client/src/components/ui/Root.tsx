@@ -12,7 +12,7 @@ export default function Root(): JSX.Element {
       <Navbar />
       <Container>
         <Loader isLoading={user.status === 'pending'}>
-            <Outlet />
+          <Outlet />
         </Loader>
       </Container>
     </>
