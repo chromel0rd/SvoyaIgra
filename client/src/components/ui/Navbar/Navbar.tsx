@@ -11,37 +11,70 @@ export default function Navbar(): JSX.Element {
 
   const links = [
     ...(user.status === 'logged'
-      ? [
-        { to: '/', name: 'Main' },
-      ]
+      ? [{ to: '/', name: 'Игра' }]
       : [
-          { to: '/signup', name: 'Sign Up' },
-          { to: '/login', name: 'Login' },
+          { to: '/signup', name: 'Зарегистрироваться' },
+          { to: '/login', name: 'Войти' },
         ]),
   ];
 
   return (
     <Box sx={{ flexGrow: 1, typography: 'body1', mb: '30px' }}>
-      <AppBar position="static" sx={{ background: '#000', boxShadow: 'none' }}>
+      <AppBar position="static" sx={{ background: '#000080', boxShadow: 'none', border: '2px solid #FFD700' }}>
         <Toolbar>
-          <Box mr={3}>
-            <Typography>Hello, {user.status === 'logged' ? user.name : 'guest'}</Typography>
+          {/* Левая сторона: Своя игра */}
+          <Typography sx={{ color: '#FFD700', fontWeight: 'bold', flexGrow: 1 }}>
+            <h1>Своя игра</h1> 
+          </Typography>
+          
+          {/* Правая сторона: Ссылки и кнопки навигации */}
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <Typography sx={{ color: '#FFD700', fontWeight: 'bold', mr: 3 }}>
+              Добро пожаловать, {user.status === 'logged' ? user.name : 'guest'}
+            </Typography>
+            {links.map((link) => (
+              <Link
+                component={NavLink}
+                key={link.name}
+                to={link.to}
+                sx={{
+                  color: '#FFD700',
+                  mr: 2,
+                  textDecoration: 'none',
+                  fontWeight: 'bold',
+                  border: '1px solid #FFD700',
+                  padding: '10px',
+                  minWidth: '100px',
+                  textAlign: 'center',
+                  '&:hover': {
+                    backgroundColor: '#FFD700',
+                    color: '#000080',
+                  },
+                }}
+              >
+                {link.name}
+              </Link>
+            ))}
+            {user.status === 'logged' && (
+              <Button
+                sx={{
+                  color: '#FFD700',
+                  border: '1px solid #FFD700',
+                  borderRadius: 0,
+                  fontWeight: 'bold',
+                  padding: '10px',
+                  minWidth: '100px',
+                  '&:hover': {
+                    backgroundColor: '#FFD700',
+                    color: '#000080',
+                  },
+                }}
+                onClick={() => void dispatch(logoutThunk())}
+              >
+                Выйти
+              </Button>
+            )}
           </Box>
-          {links.map((link) => (
-            <Link
-              component={NavLink}
-              key={link.name}
-              to={link.to}
-              sx={{ color: 'white', mr: 2, textDecoration: 'none' }}
-            >
-              {link.name}
-            </Link>
-          ))}
-          {user.status === 'logged' && (
-            <Button sx={{ color: 'white' }} onClick={() => void dispatch(logoutThunk())}>
-              Logout
-            </Button>
-          )}
         </Toolbar>
       </AppBar>
     </Box>
