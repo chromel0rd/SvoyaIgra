@@ -5,6 +5,7 @@ export const UserSchema = z.object({
   // email: z.string().email(),
   email: z.string(),
   name: z.string(),
+  totalScore: z.number()
 });
 
 export const UserResponseSchema = z.object({
@@ -12,4 +13,4 @@ export const UserResponseSchema = z.object({
   user: UserSchema,
 });
 
-
+export const UserBoardSchema = z.array(UserSchema);
