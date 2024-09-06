@@ -8,6 +8,8 @@ import SignUpPage from './components/pages/SignUpPage';
 import LoginPage from './components/pages/LoginPage';
 import MainPage from './components/pages/MainPage';
 import RatingPage from './components/pages/RatingPage';
+import GamePages from './components/pages/GamePages/GamePages'; // удалить перед пушем
+
 
 function App(): JSX.Element {
   const dispatch = useAppDispatch();
@@ -22,6 +24,10 @@ function App(): JSX.Element {
       path: '/',
       element: <Root />,
       children: [
+        { // удалить перед пушем
+          path: '/game',
+          element: <GamePages />,
+        },
         {
           element: <PrivateRouter isAllowed={user.status === 'logged'} redirect="/login" />,
           children: [
