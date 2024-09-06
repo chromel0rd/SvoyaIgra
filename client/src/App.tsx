@@ -24,16 +24,12 @@ function App(): JSX.Element {
       path: '/',
       element: <Root />,
       children: [
-        { // удалить перед пушем
-          path: '/game',
-          element: <GamePages />,
-        },
         {
           element: <PrivateRouter isAllowed={user.status === 'logged'} redirect="/login" />,
           children: [
             {
               path: '/',
-              element: <MainPage />,
+              element: <GamePages />,
             },
             {
               path: '/rating',

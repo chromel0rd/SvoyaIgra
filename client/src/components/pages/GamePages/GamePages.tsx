@@ -16,6 +16,7 @@ import {
   Button,
   DialogContentText,
   TextField,
+  Box,
 } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
 import getQuestionThunk from '../../../redux/slices/quistion/questionThunk';
@@ -24,14 +25,14 @@ export default function GamePages(): JSX.Element {
   const question = useAppSelector((store) => store.question);
   const dispatch = useAppDispatch();
   const [input, setInput] = useState({ answer: '' });
- 
+  const [correctAnswers, setCorrectAnswers] = useState(0); // For tracking correct answers
+  const [open, setOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<(typeof question)[number] | null>(null);
+  const [answeredQuestions, setAnsweredQuestions] = useState<number[]>([]); // To store answered question IDs
 
   useEffect(() => {
     void dispatch(getQuestionThunk());
   }, []);
-//   const [localQuestions, setLocalQuestions] = useState(question);
-  const [open, setOpen] = useState(false);
-  const [selectedItem, setSelectedItem] = useState<(typeof question)[number] | null>(null);
 
   const handleClickOpen = (item: (typeof question)[number]) => {
     setSelectedItem(item);
@@ -43,21 +44,23 @@ export default function GamePages(): JSX.Element {
     setSelectedItem(null);
   };
 
-  // Автоматическое закрытие диалогового окна через 5 секунд
+  // Automatically close dialog after 10 seconds and mark as answered
   useEffect(() => {
     let timer: ReturnType<typeof setTimeout>;
 
     if (open) {
       timer = setTimeout(() => {
         handleClose();
-      }, 5000); // Закрыть через 5 секунд
+        if (selectedItem) {
+          setAnsweredQuestions([...answeredQuestions, selectedItem.id]); // Mark question as answered
+        }
+      }, 10000);
     }
 
     return () => {
-      clearTimeout(timer); // Очистить таймер при закрытии модального окна или при размонтировании компонента
+      clearTimeout(timer); // Clear the timer when the dialog is closed or component unmounts
     };
   }, [open]);
-
 
   const groupedData = question.reduce(
     (acc, curr) => {
@@ -70,63 +73,92 @@ export default function GamePages(): JSX.Element {
     {} as Record<string, typeof question>,
   );
 
-
-
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setInput({ ...input, answer: event.target.value });
   };
 
-//   console.log(selectedItem);
-
+  // Check if the answer is correct
   const isCorrect = () => {
     if (selectedItem) {
-      if (input.answer.toLowerCase() === selectedItem.answer.toLowerCase()) { //сравнение
-        console.log('Yes');
-      } else {
-        console.log('No');
+      if (input.answer.toLowerCase() === selectedItem.answer.toLowerCase()) {
+        setCorrectAnswers(correctAnswers + 1); // Increase score for correct answer
       }
+      setAnsweredQuestions([...answeredQuestions, selectedItem.id]); // Mark question as answered
     }
     setInput({ answer: '' });
-    // setLocalQuestions((prevQuestions) =>
-    //     prevQuestions.filter((item) => item !== selectedItem)
-    //   );
   };
 
   return (
     <div>
-      <TableContainer component={Paper}>
+      <Box
+        sx={{
+          textAlign: 'center',
+          fontSize: '24px',
+          fontWeight: 'bold',
+          color: '#FFD700',
+          mb: '30px'
+        }}
+      >
+        Правильные ответы: {correctAnswers}
+      </Box>
+
+      <TableContainer
+        component={Paper}
+        sx={{
+          backgroundColor: '#191970',
+          border: '2px solid #FFD700',
+          borderRadius: '0',
+        }}
+      >
         <Table>
           <TableBody>
-            {/* Проходим по каждой категории */}
             {Object.entries(groupedData).map(([category, items]) => (
               <TableRow key={category}>
-                {/* Отображаем название категории слева */}
-                <TableCell>
-                  <Typography variant="h6" textAlign="center">
-                    {category}
-                  </Typography>
+                <TableCell
+                  sx={{
+                    backgroundColor: '#000080',
+                    color: '#FFD700',
+                    fontWeight: 'bold',
+                    textAlign: 'center',
+                    width: '250px',
+                    height: '100px',
+                    border: '1px solid #FFD700',
+                  }}
+                >
+                  <Typography variant="h5">{category}</Typography>
                 </TableCell>
 
-                {/* Отображаем карточки с ценами */}
-                {items.map((item, index) => (
-                  <TableCell key={index}>
-                    <Card
-                      sx={{
-                        width: 100,
-                        textAlign: 'center',
-                        padding: 2,
-                        backgroundColor: '#2979ff',
-                        color: 'white',
-                        cursor: 'pointer', // Добавляем курсор для указания кликабельности
-                      }}
-                      onClick={() => handleClickOpen(item)}
-                    >
-                      <CardContent>
-                        <Typography variant="h6">{item.difficulty}</Typography>
-                      </CardContent>
-                    </Card>
-                  </TableCell>
-                ))}
+                {items
+                  .filter((item) => !answeredQuestions.includes(item.id)) // Filter out answered questions
+                  .map((item, index) => (
+                    <TableCell key={index} sx={{ padding: 0, textAlign: 'center' }}>
+                      <Card
+                        sx={{
+                          width: 150,
+                          height: 100,
+                          textAlign: 'center',
+                          backgroundColor: '#000080',
+                          color: '#FFD700',
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          border: '1px solid #FFD700',
+                          borderRadius: '0',
+                          ml: '10px',
+                          '&:hover': {
+                            backgroundColor: '#FFD700',
+                            color: '#000080',
+                          },
+                        }}
+                        onClick={() => handleClickOpen(item)}
+                      >
+                        <CardContent>
+                          <Typography variant="h5">{item.difficulty}</Typography>
+                        </CardContent>
+                      </Card>
+                    </TableCell>
+                  ))}
               </TableRow>
             ))}
           </TableBody>
@@ -140,32 +172,68 @@ export default function GamePages(): JSX.Element {
           component: 'form',
           onSubmit: (event: React.FormEvent<HTMLFormElement>) => {
             event.preventDefault();
-            isCorrect()
-            // console.log(input.answer);
+            isCorrect();
             handleClose();
+          },
+          sx: {
+            backgroundColor: '#000080',
+            border: '2px solid #FFD700',
+            color: '#FFD700',
+            borderRadius: '0',
+            width: '600px',
           },
         }}
       >
-        <DialogTitle>{selectedItem?.category}</DialogTitle>
+        <DialogTitle
+          sx={{ color: '#FFD700', textAlign: 'center', fontSize: '24px' }}
+        >
+          {selectedItem?.category}
+        </DialogTitle>
         <DialogContent>
-          <DialogContentText>{selectedItem?.question}</DialogContentText>
+          <DialogContentText
+            sx={{ color: '#FFD700', fontSize: '18px' }}
+          >
+            {selectedItem?.question}
+          </DialogContentText>
           <TextField
             autoFocus
             required
             margin="dense"
-            id="name"
-            name="name"
+            id="answer"
+            name="answer"
             value={input.answer}
             onChange={handleChange}
             label="Ваш ответ"
             type="text"
             fullWidth
             variant="standard"
+            InputLabelProps={{
+              style: { color: '#FFD700' },
+            }}
+            InputProps={{
+              style: { color: '#FFD700' },
+            }}
+            sx={{
+              '& .MuiInput-underline:before': { borderBottomColor: '#FFD700' },
+              '& .MuiInput-underline:hover:before': {
+                borderBottomColor: '#FFD700',
+              },
+              '& .MuiInput-underline:after': {
+                borderBottomColor: '#FFD700',
+              },
+            }}
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>Закрыть</Button>
-          <Button type="submit">Ответить</Button>
+          <Button
+            onClick={handleClose}
+            sx={{ color: '#FFD700', fontSize: '18px' }}
+          >
+            Закрыть
+          </Button>
+          <Button type="submit" sx={{ color: '#FFD700', fontSize: '18px' }}>
+            Ответить
+          </Button>
         </DialogActions>
       </Dialog>
     </div>
