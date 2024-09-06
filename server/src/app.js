@@ -17,3 +17,5 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/api/auth', authRouter);
 app.use('/api/tokens', tokensRouter);
 app.use('/api/questions', questionRouter);
+
+module.exports = app;
