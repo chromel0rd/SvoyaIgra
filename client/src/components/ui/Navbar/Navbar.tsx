@@ -11,7 +11,9 @@ export default function Navbar(): JSX.Element {
 
   const links = [
     ...(user.status === 'logged'
-      ? []
+      ? [
+        { to: '/', name: 'Main' },
+      ]
       : [
           { to: '/signup', name: 'Sign Up' },
           { to: '/login', name: 'Login' },
