@@ -2,8 +2,8 @@ import { AppBar, Box, Button, Link, Typography } from '@mui/material';
 import Toolbar from '@mui/material/Toolbar';
 import React from 'react';
 import { Link as NavLink } from 'react-router-dom';
-import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import { logoutThunk } from '../../redux/slices/auth/authThunks';
+import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
+import { logoutThunk } from '../../../redux/slices/auth/authThunks';
 
 export default function Navbar(): JSX.Element {
   const dispatch = useAppDispatch();
