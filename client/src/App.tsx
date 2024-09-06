@@ -7,7 +7,9 @@ import { checkUserThunk } from './redux/slices/auth/authThunks';
 import SignUpPage from './components/pages/SignUpPage';
 import LoginPage from './components/pages/LoginPage';
 import MainPage from './components/pages/MainPage';
+import RatingPage from './components/pages/RatingPage';
 import GamePages from './components/pages/GamePages/GamePages'; // удалить перед пушем
+
 
 function App(): JSX.Element {
   const dispatch = useAppDispatch();
@@ -16,7 +18,6 @@ function App(): JSX.Element {
   useEffect(() => {
     void dispatch(checkUserThunk());
   }, []);
-
 
   const router = createBrowserRouter([
     {
@@ -33,6 +34,10 @@ function App(): JSX.Element {
             {
               path: '/',
               element: <MainPage />,
+            },
+            {
+              path: '/rating',
+              element: <RatingPage user={user} />,
             },
           ],
         },

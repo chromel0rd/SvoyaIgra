@@ -71,4 +71,9 @@ router.get('/logout', (req, res) => {
   res.clearCookie('refreshToken').sendStatus(200);
 });
 
+router.get('/rating', async (req, res) => {
+  const rating = await User.findAll();
+  res.json(rating);
+});
+
 module.exports = router;
