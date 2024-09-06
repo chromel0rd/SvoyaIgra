@@ -3,9 +3,9 @@ import { createSlice } from '@reduxjs/toolkit';
 import type { UserState } from '../../../types/userTypes';
 import { checkUserThunk, loginThunk, logoutThunk, signUpThunk } from './authThunks';
 
-type UserSliceType = { accessToken: string; user: UserState };
+type UserSliceType = { accessToken: string; user: UserState; count: number };
 
-const initialState: UserSliceType = { accessToken: '', user: { status: 'pending' } };
+const initialState: UserSliceType = { accessToken: '', user: { status: 'pending' }, count: 0 };
 
 const authSlice = createSlice({
   name: 'auth',
